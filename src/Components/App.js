@@ -10,7 +10,6 @@ import {
 import {
   Routes,
   Route,
-  Navigate
 } from "react-router-dom";
 import {REQUEST_URL} from "../data/constants.js";
 
@@ -19,6 +18,7 @@ const App = () => {
     const [search, setSearch] = useState('');
     const [products, setProducts] = useState([]);
     const [loadingPosts, setLoading] = useState(false);
+    let filtredProducts = [];
 
     useEffect(() => {
     setLoading(true);
@@ -27,6 +27,7 @@ const App = () => {
     .then((data) => {
         setLoading(false);
         setProducts( data );
+        filtredProducts = [...data];
     })
     .catch((err) => {
         setLoading(false);
@@ -36,7 +37,7 @@ const App = () => {
 
     const handleChange = (e) => {
         if (!e.target.value) {
-            setProducts(products);
+            setProducts(filtredProducts);
             setSearch('');
             return;
         }
@@ -92,14 +93,23 @@ const App = () => {
         <Route path="/" element={ <Header order={order} setOrder={removeFromOrder} /> }>
             <Route index element={
                 <Container sx={{mt: '2rem', mb: '2rem'}}>
-                    <Search
-                        value={search}
-                        onChange={handleChange}
-                    />
-                    <GoodsList
-                        goods={products}
-                        setOrder={addToOrder}
-                    />
+                    { loadingPosts ? (
+                        <>
+                            <h2>Loading..</h2>
+                        </>
+                    ) : (
+                        <>
+                            <Search
+                                value={search}
+                                onChange={handleChange}
+                            />
+                            <GoodsList
+                                goods={products}
+                                setOrder={addToOrder}
+                            />
+                        </>
+                    ) }
+                    
                 </Container>
             } />
             <Route path="/leads" element={ <Leads /> } />

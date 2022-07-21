@@ -11,16 +11,13 @@ import {
 import './GoodsItem.css'
 
 const GoodsItem = (props) => {
-    const { name, price, setOrder } = props;
+    const { name, price, poster, setOrder } = props;
 
     return (
         <Grid item xs={6} md={4} lg={3}>
             <Card sx={{height: '100%'}}>
                 <CardMedia
-                    image={`https://via.placeholder.com/300x150.png?text=${name.slice(
-                        0,
-                        12
-                    )}`}
+                    image={poster}
                     height='140px'
                     alt={name}
                     component="img"

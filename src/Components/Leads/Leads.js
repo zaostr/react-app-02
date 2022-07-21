@@ -60,6 +60,7 @@ export const Leads = () => {
             autoHeight
             rows={leadList}
             columns={columns}
+            loading={loadingLeads}
             // pageSize={15}
             // rowsPerPageOptions={[5,10,15]}
             checkboxSelection
