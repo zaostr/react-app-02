@@ -4,7 +4,7 @@ import {
     IconButton,
     Divider
 } from '@mui/material';
-import { ShoppingBag, Delete as DeleteIcon } from '@mui/icons-material';
+import { Delete as DeleteIcon } from '@mui/icons-material';
 import { 
     Menu,
     MenuItem

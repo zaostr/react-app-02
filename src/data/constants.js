@@ -1,0 +1,1 @@
+export const REQUEST_URL  = 'https://62d66d1f51e6e8f06f0944e7.mockapi.io/api/v666/'

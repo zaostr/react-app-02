@@ -1,24 +1,42 @@
-import { useState } from 'react';
-
-import BasketList from './BasketList/BasketList';
+import { useState, useEffect } from 'react';
 import GoodsList from './GoodsList/GoodsList';
 import Search from './Search/Search';
 import Header from './Header/Header';
-import HeaderCart from './Header/HeaderCart/HeaderCart';
+import {Leads} from './Leads/Leads';
+import {NotFound} from '../Pages/NotFound/NotFound';
 import {
   Container
 } from '@mui/material';
-
-import { goods } from '../data/goods';
+import {
+  Routes,
+  Route,
+  Navigate
+} from "react-router-dom";
+import {REQUEST_URL} from "../data/constants.js";
 
 const App = () => {
     const [order, setOrder] = useState([]);
     const [search, setSearch] = useState('');
-    const [products, setProducts] = useState(goods);
+    const [products, setProducts] = useState([]);
+    const [loadingPosts, setLoading] = useState(false);
+
+    useEffect(() => {
+    setLoading(true);
+    fetch(REQUEST_URL+'products')
+    .then((response) => response.json())
+    .then((data) => {
+        setLoading(false);
+        setProducts( data );
+    })
+    .catch((err) => {
+        setLoading(false);
+        console.log(err);
+    })
+    }, []);
 
     const handleChange = (e) => {
         if (!e.target.value) {
-            setProducts(goods);
+            setProducts(products);
             setSearch('');
             return;
         }
@@ -70,25 +88,24 @@ const App = () => {
     };
     
     return (
-      <>
-        <Header
-            order={order} 
-            setOrder={removeFromOrder} />
-        <Container sx={{mt: '2rem', mb: '2rem'}}>
-            <Search
-                value={search}
-                onChange={handleChange}
-            />
-            <GoodsList
-                goods={products}
-                setOrder={addToOrder}
-            />
-            <BasketList
-                order={order}
-                setOrder={removeFromOrder} 
-            />
-        </Container>
-      </>
+      <Routes>
+        <Route path="/" element={ <Header order={order} setOrder={removeFromOrder} /> }>
+            <Route index element={
+                <Container sx={{mt: '2rem', mb: '2rem'}}>
+                    <Search
+                        value={search}
+                        onChange={handleChange}
+                    />
+                    <GoodsList
+                        goods={products}
+                        setOrder={addToOrder}
+                    />
+                </Container>
+            } />
+            <Route path="/leads" element={ <Leads /> } />
+            <Route path="*" element={ <NotFound /> } />
+        </Route>
+      </Routes>
     );
 }
 
