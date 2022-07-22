@@ -1,5 +1,5 @@
 import {useState, useEffect} from 'react'
-import { DataGrid } from '@mui/x-data-grid';
+import { DataGrid, ruRU } from '@mui/x-data-grid';
 import {REQUEST_URL} from "../../data/constants.js";
 
 const columns = [
@@ -57,6 +57,7 @@ export const Leads = () => {
     <div>
         <h2>Leads</h2>
         <DataGrid
+            localeText={ruRU.components.MuiDataGrid.defaultProps.localeText}
             autoHeight
             rows={leadList}
             columns={columns}
