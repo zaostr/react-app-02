@@ -5,7 +5,10 @@ import Header from './Header/Header';
 import {Leads} from './Leads/Leads';
 import {NotFound} from '../Pages/NotFound/NotFound';
 import {
-  Container
+  Container,
+  Link,
+  Box,
+  Typography
 } from '@mui/material';
 import {
   Routes,
@@ -93,7 +96,7 @@ const App = () => {
         <Route path="/" element={ <Header order={order} setOrder={removeFromOrder} /> }>
             <Route index element={
                 <Container sx={{mt: '2rem', mb: '2rem'}}>
-                    { loadingPosts ? (
+                    { /*loadingPosts ? (
                         <>
                             <h2>Loading..</h2>
                         </>
@@ -108,7 +111,19 @@ const App = () => {
                                 setOrder={addToOrder}
                             />
                         </>
-                    ) }
+                    )*/ }
+                    <Box sx={{mb:5}}>
+                        <Typography variant='h3'>M UI Overview</Typography>
+                        <Link href="https://mui.com/material-ui/guides/routing/" target="_blank" underline="always" rel="noopener noreferrer">Routing</Link>
+                    </Box>
+                    <Box sx={{mb:5}}>
+                        <Typography variant='h3'>Tables with a lot of things</Typography>
+                        <Link href="https://mui.com/x/react-data-grid/editing/#full-featured-crud-component" target="_blank" underline="always" rel="noopener noreferrer">Data Grid Pro</Link>
+                    </Box>
+                    <Box sx={{mb:5}}>
+                        <Typography variant='h3'>Priclist</Typography>
+                        <Link href="https://mui.com/pricing/" target="_blank" underline="always" rel="noopener noreferrer">M UI Pricing</Link>
+                    </Box>
                     
                 </Container>
             } />
