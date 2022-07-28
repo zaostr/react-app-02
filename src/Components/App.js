@@ -15,6 +15,7 @@ import {
   Route,
 } from "react-router-dom";
 import {REQUEST_URL} from "../data/constants.js";
+import { LeadsCrud } from './LeadsCrud/LeadsCrud';
 
 const App = () => {
     const [order, setOrder] = useState([]);
@@ -128,6 +129,7 @@ const App = () => {
                 </Container>
             } />
             <Route path="/leads" element={ <Leads /> } />
+            <Route path="/leads-crud" element={ <LeadsCrud /> } />
             <Route path="*" element={ <NotFound /> } />
         </Route>
       </Routes>

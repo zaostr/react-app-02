@@ -1,6 +1,20 @@
-import {useState, useEffect} from 'react'
-import { DataGrid, ruRU } from '@mui/x-data-grid';
+import {useState, useEffect, useCallback, useRef} from 'react'
+import {
+  ruRU,
+} from '@mui/x-data-grid';
+import { DataGridPro, useGridApiRef } from '@mui/x-data-grid-pro';
+import { Box, LinearProgress } from '@mui/material';
 import {REQUEST_URL} from "../../data/constants.js";
+
+const MAX_ROW_LENGTH = 500;
+
+function sleep(duration) {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve();
+    }, duration);
+  });
+}
 
 const columns = [
   { field: 'id', headerName: 'ID', width: 70 },
@@ -22,26 +36,55 @@ const columns = [
       `${params.row.firstname || ''} ${params.row.lastname || ''}`,
   },
 ];
-/*const rows = [
-  { id: 1, lastName: 'Snow', firstName: 'Jon', age: 35 },
-  { id: 2, lastName: 'Lannister', firstName: 'Cersei', age: 42 },
-  { id: 3, lastName: 'Lannister', firstName: 'Jaime', age: 45 },
-  { id: 4, lastName: 'Stark', firstName: 'Arya', age: 16 },
-  { id: 5, lastName: 'Targaryen', firstName: 'Daenerys', age: null },
-  { id: 6, lastName: 'Melisandre', firstName: null, age: 150 },
-  { id: 7, lastName: 'Clifford', firstName: 'Ferrara', age: 44 },
-  { id: 8, lastName: 'Frances', firstName: 'Rossini', age: 36 },
-  { id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65 },
-];*/
 
 export const Leads = () => {
+    const apiRef = useGridApiRef();
+    const [loadingLeads, setLoading] = useState(false);
+    const [leadList, setLeadList] = useState([]);
+    const [page, setPage] = useState(0);
+    const mounted = useRef(true);
+    /*const { data } = useDemoData({
+        dataSet: 'Commodity',
+        rowLength: 20,
+        maxColumns: 6,
+    });*/
 
-  const [loadingLeads, setLoading] = useState(false);
-  const [leadList, setLeadList] = useState([]);
-  
-  useEffect(() => {
-    setLoading(true);
-      fetch(REQUEST_URL+'leads')
+    /*const handleOnRowsScrollEnd = (params) => {
+        setLoading(true);
+        setPage(page + 1);
+    };*/
+
+    const loadServerRows = async (newRowLength) => {
+        setLoading(true);
+        const newData = await fetch(REQUEST_URL+'leads?limit=15&page='+(page+1))
+            .then((response) => response.json())
+            .then((data) => {
+                setLoading(false);
+                return data;
+            })
+            .catch((err) => {
+                setLoading(false);
+                console.log(err);
+            });
+        // Simulate network throttle
+        await sleep(Math.random() * 500 + 100);
+    
+        if (mounted.current) {
+          setLoading(false);
+          setLeadList(leadList.concat(newData));
+        }
+    };
+    
+
+    const handleOnRowsScrollEnd = (params) => {
+        if (leadList.length <= MAX_ROW_LENGTH) {
+            console.log(params.viewportPageSize);
+            loadServerRows(params.viewportPageSize);
+        }
+    };
+
+    /*useEffect(() => {
+      fetch(REQUEST_URL+'leads?limit=10&page='+(page+1))
       .then((response) => response.json())
       .then((data) => {
           setLoading(false);
@@ -51,21 +94,57 @@ export const Leads = () => {
           setLoading(false);
           console.log(err);
       })
-    }, [])
+    }, [page, setLeadList, setLoading])*/
+
+    /*if (!loadingLeads) {
+        window.addEventListener('scroll',()=>{
+        const scrollTop = document.documentElement.scrollTop;
+        const scrollTarget = document.querySelector('.anchor').offsetTop;
+        const windowHeight = window.visualViewport.height;
+        if(scrollTop + windowHeight + 400 > scrollTarget){
+            setLoading(false);
+            setTimeout(()=>{
+                if (!loadingLeads) {
+                    handleOnRowsScrollEnd();
+                    console.log(1);
+                }
+            },1000)
+            }
+        })
+    }*/
   
   return (
     <div>
         <h2>Leads</h2>
-        <DataGrid
-            localeText={ruRU.components.MuiDataGrid.defaultProps.localeText}
-            autoHeight
-            rows={leadList}
-            columns={columns}
-            loading={loadingLeads}
-            // pageSize={15}
-            // rowsPerPageOptions={[5,10,15]}
-            checkboxSelection
-        />
+        {/* <Box sx={{ height: 400, mb: 20 }}>
+          <DataGridPro
+              apiRef={apiRef}
+              localeText={ruRU.components.MuiDataGrid.defaultProps.localeText}
+              // autoHeight
+              rows={leadList}
+              columns={columns}
+              loading={loadingLeads}
+              onRowsScrollEnd={handleOnRowsScrollEnd}
+              // pageSize={15}
+              // rowsPerPageOptions={[5,10,15]}
+              checkboxSelection
+          />
+        </Box> */}
+        <Box sx={{ height: '70vh', mb: 20 }}>
+        <DataGridPro
+              localeText={ruRU.components.MuiDataGrid.defaultProps.localeText}
+              // autoHeight
+              rows={leadList}
+              columns={columns}
+              loading={loadingLeads}
+              hideFooterPagination
+              onRowsScrollEnd={handleOnRowsScrollEnd}
+              components={{
+                LoadingOverlay: LinearProgress,
+              }}
+              checkboxSelection
+          />
+          </Box>
     </div>
   )
 }

@@ -25,8 +25,8 @@ import {
 } from "react-router-dom";
 
 
-const pages = ['Home', 'Leads', '404'];
-const links = ['/', '/leads', '/dashboard'];
+const pages = ['Home', 'Leads', '404', 'Leads Crud'];
+const links = ['/', '/leads', '/dashboard', '/leads-crud'];
 const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 
