@@ -56,7 +56,7 @@ export const Leads = () => {
 
     const loadServerRows = async (newRowLength) => {
         setLoading(true);
-        const newData = await fetch(REQUEST_URL+'leads?limit=15&page='+(page+1))
+        const newData = await fetch(REQUEST_URL+'leadsCrud?limit=15&page='+(page+1))
             .then((response) => response.json())
             .then((data) => {
                 setLoading(false);
@@ -71,7 +71,7 @@ export const Leads = () => {
     
         if (mounted.current) {
           setLoading(false);
-          setLeadList(leadList.concat(newData));
+          setLeadList([...leadList, ...newData]);
         }
     };
     
